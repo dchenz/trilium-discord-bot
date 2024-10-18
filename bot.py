@@ -15,6 +15,11 @@ if __name__ == "__main__":
     bot = commands.Bot(command_prefix="=", intents=bot_intents)
 
     @bot.event
+    async def setup_hook():
+        await bot.load_extension("cogs.notes")
+        await bot.tree.sync()
+
+    @bot.event
     async def on_command_error(_, error):
         if isinstance(error, commands.CommandNotFound):
             return
