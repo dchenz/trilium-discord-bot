@@ -1,7 +1,9 @@
-from discord import app_commands, Interaction
-from discord.ext import commands
-import trilium
 import json
+
+from discord import Interaction, app_commands
+from discord.ext import commands
+
+import trilium
 
 
 def prettyJson(obj) -> str:

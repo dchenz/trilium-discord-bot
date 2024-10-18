@@ -3,6 +3,7 @@ import sys
 
 from discord import Intents
 from discord.ext import commands
+
 import trilium
 
 if __name__ == "__main__":
