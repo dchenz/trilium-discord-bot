@@ -6,18 +6,18 @@ from discord.ext import commands
 
 import trilium
 
+
+def load_required_env(name: str) -> str:
+    value = os.getenv(name)
+    if not value:
+        sys.exit(f"Missing {name} environment variable")
+    return value
+
+
 if __name__ == "__main__":
-    token = os.getenv("TOKEN")
-    if not token:
-        sys.exit("Missing TOKEN environment variable")
-
-    triliumUrl = os.getenv("TRILIUM_URL")
-    if not triliumUrl:
-        sys.exit("Missing TRILIUM_URL environment variable")
-
-    triliumToken = os.getenv("TRILIUM_TOKEN")
-    if not triliumToken:
-        sys.exit("Missing TRILIUM_TOKEN environment variable")
+    token = load_required_env("TOKEN")
+    triliumUrl = load_required_env("TRILIUM_URL")
+    triliumToken = load_required_env("TRILIUM_TOKEN")
 
     trilium.login(triliumUrl, triliumToken)
 
