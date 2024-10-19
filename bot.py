@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 
@@ -15,6 +16,11 @@ def load_required_env(name: str) -> str:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    )
+
     token = load_required_env("TOKEN")
     triliumUrl = load_required_env("TRILIUM_URL")
     triliumToken = load_required_env("TRILIUM_TOKEN")
