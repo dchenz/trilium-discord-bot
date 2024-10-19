@@ -45,7 +45,6 @@ class Notes(commands.Cog):
         limit: int | None = None,
     ):
         options = {
-            "query": query,
             "fast_search": not includecontents,
             "include_archived_notes": includearchived,
             "ancestor_note_id": ancestorid,
@@ -54,12 +53,12 @@ class Notes(commands.Cog):
             "order_direction": orderdirection,
             "limit": limit,
         }
-        response = trilium.client.search_note(query, **options)
+        response = trilium.client.search_notes(query, **options)
         fieldsToPick = ["noteId", "title", "dateModified"]
         notes = [
-            datautil.pickDictKeys(n, fieldsToPick)
-            for n in response["results"]
-            if n["noteId"] != "_hidden"
+            datautil.pickDictKeys(n.to_dict(), fieldsToPick)
+            for n in response.results
+            if n.note_id != "_hidden"
         ]
         await interaction.response.send_message(datautil.formatAsTable(notes, fieldsToPick))
 

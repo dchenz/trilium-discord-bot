@@ -2,7 +2,7 @@
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-This is a Discord bot that wraps the [trilium_py](https://github.com/nriver/trilium-py) Python client. It's designed for self-hosting and is meant to be used in a private Discord server where you're the only member.
+This is a Discord bot that interacts with Trilium ETAPI. It's designed for self-hosting and is meant to be used in a private Discord server where you're the only member.
 
 The idea is to use Discord as a reverse proxy to access a Trilium instance hosted on your home network, without needing open router ports or a VPN. This setup is handy for taking notes directly through Discord when you're not at home.
 
@@ -17,7 +17,7 @@ The idea is to use Discord as a reverse proxy to access a Trilium instance hoste
 Before running the bot, ensure the following environment variables are set:
 
 - `TOKEN`: Your Discord bot token.
-- `TRILIUM_URL`: Your Trilium instance URL.
+- `TRILIUM_URL`: Your Trilium instance URL. The HTTP path must be `/etapi`.
 - `TRILIUM_TOKEN`: Your Trilium ETAPI token. Create one by going to "Options > ETAPI > Create new ETAPI token".
 
 ## Running the bot
