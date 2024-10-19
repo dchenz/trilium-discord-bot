@@ -29,3 +29,7 @@ docker run --rm \
      --additional-properties=packageName=$packageName,projectName=$packageName,removeUnusedModels=true
 
 rm -f etapi.openapi.yaml
+
+# Format the generated code so it's nicer to read.
+
+ruff format $packageName
