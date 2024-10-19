@@ -61,17 +61,19 @@ class Notes(commands.Cog):
             for n in response.results
             if n.note_id != "_hidden"
         ]
-        await interaction.response.send_message(formatAsTable(notes, fieldsToPick))
+        await interaction.response.send_message(formatAsTable(notes, fieldsToPick), ephemeral=True)
 
     @group.command(name="contents", description="Returns the contents of a note by ID")
     async def getNoteContents(self, interaction: Interaction, noteid: str):
         try:
             contents = trilium.client.get_note_content(noteid)
         except Exception as e:
-            await interaction.response.send_message(str(e))
+            await interaction.response.send_message(str(e), ephemeral=True)
             return
         f: BufferedIOBase = StringIO(contents)  # type: ignore
-        await interaction.response.send_message(file=File(f, filename="message.txt"))
+        await interaction.response.send_message(
+            file=File(f, filename="message.txt"), ephemeral=True
+        )
 
     @group.command(name="create-from-message", description="Creates a new note")
     @app_commands.describe(
@@ -92,13 +94,13 @@ class Notes(commands.Cog):
         try:
             messageIdInt = int(messageid)
         except ValueError:
-            await interaction.response.send_message("Invalid message ID")
+            await interaction.response.send_message("Invalid message ID", ephemeral=True)
             return
 
         try:
             noteMsg = await interaction.channel.fetch_message(messageIdInt)
         except NotFound as e:
-            await interaction.response.send_message(e.text)
+            await interaction.response.send_message(e.text, ephemeral=True)
             return
 
         response = trilium.client.create_note(
@@ -107,12 +109,14 @@ class Notes(commands.Cog):
             )
         )
         if response.note:
-            await interaction.response.send_message(f"Created note with ID {response.note.note_id}")
+            await interaction.response.send_message(
+                f"Created note with ID {response.note.note_id}", ephemeral=True
+            )
 
     @group.command(name="delete", description="Deletes a note.")
     async def deleteNote(self, interaction: Interaction, noteid: str):
         trilium.client.delete_note_by_id(noteid)
-        await interaction.response.send_message("Deleted")
+        await interaction.response.send_message("Deleted", ephemeral=True)
 
 
 async def setup(bot: commands.Bot):
