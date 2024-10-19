@@ -7,7 +7,8 @@ import tabulate
 
 def loadRequiredEnv(name: str) -> str:
     """
-    Reads an environment variable, and if the value is empty, the program terminates with status code 1.
+    Reads an environment variable, and if the value is empty, the program terminates with status
+    code 1.
     """
     value = os.getenv(name)
     if not value:

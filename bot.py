@@ -1,9 +1,9 @@
 import logging
-from datautil import loadRequiredEnv
 
 from discord import Intents
 from discord.ext import commands
 
+from datautil import loadRequiredEnv
 
 if __name__ == "__main__":
     logging.basicConfig(

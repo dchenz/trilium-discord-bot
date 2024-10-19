@@ -10,7 +10,8 @@ class Notes(commands.Cog):
         name="search", description="Search for notes based on the provided criteria."
     )
     @app_commands.describe(
-        query="The query string to search for, which can be full text, exact match, or with labels.",
+        query="The query string to search for, which can be full text, exact match, "
+        "or with labels.",
         includecontents="Search for keywords in the note contents too.",
         includearchived="Include archived notes in the search results.",
         ancestorid="Specify the ancestor noteId to limit search to its subtree.",
@@ -58,9 +59,7 @@ class Notes(commands.Cog):
             for n in response["results"]
             if n["noteId"] != "_hidden"
         ]
-        await interaction.response.send_message(
-            datautil.formatAsTable(notes, fieldsToPick)
-        )
+        await interaction.response.send_message(datautil.formatAsTable(notes, fieldsToPick))
 
 
 async def setup(bot: commands.Bot):
