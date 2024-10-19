@@ -9,9 +9,9 @@ from trilium_client.trilium_client.models import CreateNoteDef
 
 
 class Notes(commands.Cog):
-    @app_commands.command(
-        name="search", description="Search for notes based on the provided criteria."
-    )
+    group = app_commands.Group(name="notes", description="Manage your notes.")
+
+    @group.command(name="search", description="Search for notes based on the provided criteria.")
     @app_commands.describe(
         query="The query string to search for, which can be full text, exact match, "
         "or with labels.",
@@ -63,7 +63,7 @@ class Notes(commands.Cog):
         ]
         await interaction.response.send_message(datautil.formatAsTable(notes, fieldsToPick))
 
-    @app_commands.command(name="contents", description="Returns the contents of a note by ID")
+    @group.command(name="contents", description="Returns the contents of a note by ID")
     async def getNoteContents(self, interaction: Interaction, noteid: str):
         try:
             contents = trilium.client.get_note_content(noteid)
@@ -73,7 +73,7 @@ class Notes(commands.Cog):
         f: BufferedIOBase = StringIO(contents)  # type: ignore
         await interaction.response.send_message(file=File(f, filename="message.txt"))
 
-    @app_commands.command(name="create-from-message", description="Creates a new note")
+    @group.command(name="create-from-message", description="Creates a new note")
     async def createNote(self, interaction: Interaction, messageid: str, title: str = "new note"):
         if not isinstance(interaction.channel, TextChannel):
             return
