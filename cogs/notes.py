@@ -1,6 +1,6 @@
 from io import BufferedIOBase, StringIO
 
-from discord import File, Interaction, TextChannel, app_commands
+from discord import File, Interaction, NotFound, TextChannel, app_commands
 from discord.ext import commands
 
 import datautil
@@ -77,11 +77,21 @@ class Notes(commands.Cog):
     async def createNote(self, interaction: Interaction, messageid: str, title: str = "new note"):
         if not isinstance(interaction.channel, TextChannel):
             return
-        messageIdInt = int(messageid)
-        noteMsg = await interaction.channel.fetch_message(messageIdInt)
-        contents = noteMsg.content
+
+        try:
+            messageIdInt = int(messageid)
+        except ValueError:
+            await interaction.response.send_message("Invalid message ID")
+            return
+
+        try:
+            noteMsg = await interaction.channel.fetch_message(messageIdInt)
+        except NotFound as e:
+            await interaction.response.send_message(e.text)
+            return
+
         response = trilium.client.create_note(
-            CreateNoteDef(parentNoteId="root", title=title, type="text", content=contents)
+            CreateNoteDef(parentNoteId="root", title=title, type="text", content=noteMsg.content)
         )
         if response.note:
             await interaction.response.send_message(f"Created note with ID {response.note.note_id}")
