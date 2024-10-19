@@ -3,9 +3,9 @@ from io import BufferedIOBase, StringIO
 from discord import File, Interaction, NotFound, TextChannel, app_commands
 from discord.ext import commands
 
-import datautil
 import trilium
 from trilium_client.trilium_client.models import CreateNoteDef
+from utils import formatAsTable, pickDictKeys
 
 
 class Notes(commands.Cog):
@@ -57,11 +57,11 @@ class Notes(commands.Cog):
         response = trilium.client.search_notes(query, **options)
         fieldsToPick = ["noteId", "title", "dateModified"]
         notes = [
-            datautil.pickDictKeys(n.to_dict(), fieldsToPick)
+            pickDictKeys(n.to_dict(), fieldsToPick)
             for n in response.results
             if n.note_id != "_hidden"
         ]
-        await interaction.response.send_message(datautil.formatAsTable(notes, fieldsToPick))
+        await interaction.response.send_message(formatAsTable(notes, fieldsToPick))
 
     @group.command(name="contents", description="Returns the contents of a note by ID")
     async def getNoteContents(self, interaction: Interaction, noteid: str):

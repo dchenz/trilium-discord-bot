@@ -1,7 +1,7 @@
 import logging
 
-from datautil import loadRequiredEnv
 from trilium_client import trilium_client
+from utils import loadRequiredEnv
 
 logger = logging.getLogger(__name__)
 
