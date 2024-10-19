@@ -1,4 +1,6 @@
-from discord import Interaction, app_commands
+from io import BufferedIOBase, StringIO
+
+from discord import File, Interaction, app_commands
 from discord.ext import commands
 
 import datautil
@@ -60,6 +62,16 @@ class Notes(commands.Cog):
             if n["noteId"] != "_hidden"
         ]
         await interaction.response.send_message(datautil.formatAsTable(notes, fieldsToPick))
+
+    @app_commands.command(name="contents", description="Returns the contents of a note by ID")
+    async def getNoteContents(self, interaction: Interaction, noteid: str):
+        try:
+            contents = trilium.client.get_note_content(noteid)
+        except Exception as e:
+            await interaction.response.send_message(str(e))
+            return
+        f: BufferedIOBase = StringIO(contents)  # type: ignore
+        await interaction.response.send_message(file=File(f, filename="message.txt"))
 
 
 async def setup(bot: commands.Bot):
