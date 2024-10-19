@@ -1,11 +1,12 @@
 from io import BufferedIOBase, StringIO
 
-from discord import File, Interaction, NotFound, TextChannel, app_commands
+from discord import File, Interaction, app_commands
 from discord.ext import commands
 
 import trilium
 from trilium_client.trilium_client.models import CreateNoteDef
 from utils import formatAsTable, pickDictKeys
+from utils.discord import findMessage
 
 
 class Notes(commands.Cog):
@@ -88,19 +89,15 @@ class Notes(commands.Cog):
         title: str = "new note",
         ancestorid: str = "root",
     ):
-        if not isinstance(interaction.channel, TextChannel):
-            return
-
         try:
             messageIdInt = int(messageid)
         except ValueError:
             await interaction.response.send_message("Invalid message ID", ephemeral=True)
             return
 
-        try:
-            noteMsg = await interaction.channel.fetch_message(messageIdInt)
-        except NotFound as e:
-            await interaction.response.send_message(e.text, ephemeral=True)
+        noteMsg = await findMessage(messageIdInt, interaction)
+        if not noteMsg:
+            await interaction.response.send_message("Unable to find message ID", ephemeral=True)
             return
 
         response = trilium.client.create_note(
