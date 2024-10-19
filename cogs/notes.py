@@ -74,7 +74,18 @@ class Notes(commands.Cog):
         await interaction.response.send_message(file=File(f, filename="message.txt"))
 
     @group.command(name="create-from-message", description="Creates a new note")
-    async def createNote(self, interaction: Interaction, messageid: str, title: str = "new note"):
+    @app_commands.describe(
+        messageid="ID of the Discord message used to create the note",
+        title="Title of the note",
+        ancestorid="ID of the note to create this new note under",
+    )
+    async def createNote(
+        self,
+        interaction: Interaction,
+        messageid: str,
+        title: str = "new note",
+        ancestorid: str = "root",
+    ):
         if not isinstance(interaction.channel, TextChannel):
             return
 
@@ -91,7 +102,9 @@ class Notes(commands.Cog):
             return
 
         response = trilium.client.create_note(
-            CreateNoteDef(parentNoteId="root", title=title, type="text", content=noteMsg.content)
+            CreateNoteDef(
+                parentNoteId=ancestorid, title=title, type="text", content=noteMsg.content
+            )
         )
         if response.note:
             await interaction.response.send_message(f"Created note with ID {response.note.note_id}")
