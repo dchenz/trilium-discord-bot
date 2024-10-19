@@ -1,18 +1,8 @@
 import logging
-import os
-import sys
+from datautil import load_required_env
 
 from discord import Intents
 from discord.ext import commands
-
-import trilium
-
-
-def load_required_env(name: str) -> str:
-    value = os.getenv(name)
-    if not value:
-        sys.exit(f"Missing {name} environment variable")
-    return value
 
 
 if __name__ == "__main__":
@@ -22,10 +12,6 @@ if __name__ == "__main__":
     )
 
     token = load_required_env("TOKEN")
-    triliumUrl = load_required_env("TRILIUM_URL")
-    triliumToken = load_required_env("TRILIUM_TOKEN")
-
-    trilium.login(triliumUrl, triliumToken)
 
     bot_intents = Intents.default()
     bot_intents.messages = True

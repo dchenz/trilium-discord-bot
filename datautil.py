@@ -1,6 +1,15 @@
+import os
+import sys
 from typing import Any
 
 import tabulate
+
+
+def load_required_env(name: str) -> str:
+    value = os.getenv(name)
+    if not value:
+        sys.exit(f"Missing {name} environment variable")
+    return value
 
 
 def formatAsTable(records: list[dict[str, Any]], fieldsToPick: list[str]) -> str:
