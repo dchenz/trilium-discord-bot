@@ -41,11 +41,17 @@ class Notes(commands.Cog):
         includecontents: bool = False,
         includearchived: bool = False,
         ancestorid: str | None = None,
-        ancestordepth: int | None = None,
+        ancestordepth: str | None = None,
         orderby: str | None = None,
         orderdirection: str = "asc",
         limit: int | None = None,
     ):
+        if (not ancestorid or ancestorid == "root") and ancestordepth:
+            await interaction.response.send_message(
+                "`ancestordepth` has no effect if `ancestorid` is `root`", ephemeral=True
+            )
+            return
+
         options = {
             "fast_search": not includecontents,
             "include_archived_notes": includearchived,
