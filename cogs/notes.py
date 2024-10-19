@@ -96,6 +96,11 @@ class Notes(commands.Cog):
         if response.note:
             await interaction.response.send_message(f"Created note with ID {response.note.note_id}")
 
+    @group.command(name="delete", description="Deletes a note.")
+    async def deleteNote(self, interaction: Interaction, noteid: str):
+        trilium.client.delete_note_by_id(noteid)
+        await interaction.response.send_message("Deleted")
+
 
 async def setup(bot: commands.Bot):
     await bot.add_cog(Notes())
