@@ -1,0 +1,31 @@
+services:
+  bot:
+    build:
+      context: .
+    environment:
+      TOKEN: ${TOKEN}
+      TRILIUM_URL: http://trilium:8080/etapi
+      TRILIUM_PASSWORD: ${TRILIUM_PASSWORD}
+    depends_on:
+      trilium-init:
+        condition: service_completed_successfully
+
+  trilium-init:
+    image: alpine/curl
+    command: >
+      sh -c "
+        if [ -z \"${TRILIUM_PASSWORD}\" ]; then
+          echo \"Please set the Trilium password using the TRILIUM_PASSWORD environment variable.\"
+          exit 1
+        fi
+        curl -X POST http://trilium:8080/api/setup/new-document
+        curl -X POST -d \"password1=${TRILIUM_PASSWORD}&password2=${TRILIUM_PASSWORD}\" http://trilium:8080/set-password
+      "
+    depends_on:
+      trilium:
+        condition: service_healthy
+
+  trilium:
+    image: triliumnext/notes:v0.90.4
+    ports:
+      - 8080:8080
