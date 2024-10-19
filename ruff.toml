@@ -7,3 +7,4 @@ line-length = 100
 # Pylint - PLC, PLE, PLW
 # isort - I
 lint.select = ['E', 'F', 'W', 'A', 'PLC', 'PLE', 'PLW', 'I']
+exclude = ["trilium_client"]
