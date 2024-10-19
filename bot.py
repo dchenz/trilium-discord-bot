@@ -1,5 +1,5 @@
 import logging
-from datautil import load_required_env
+from datautil import loadRequiredEnv
 
 from discord import Intents
 from discord.ext import commands
@@ -11,7 +11,7 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
     )
 
-    token = load_required_env("TOKEN")
+    token = loadRequiredEnv("TOKEN")
 
     bot_intents = Intents.default()
     bot_intents.messages = True
