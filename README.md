@@ -51,6 +51,5 @@ This project uses [pipreqs](https://github.com/bndr/pipreqs) to generate the `re
 ```sh
 pip install pipreqs
 
-# Use `--ignore .venv` if you're using a virtual environment.
-pipreqs . --force
+./scripts/generate-requirements.sh
 ```
