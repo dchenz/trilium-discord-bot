@@ -14,8 +14,8 @@ services:
     image: alpine/curl
     command: >
       sh -c "
-        if [ -z \"${TRILIUM_PASSWORD}\" ]; then
-          echo \"Please set the Trilium password using the TRILIUM_PASSWORD environment variable.\"
+        if [[ ! "${TRILIUM_PASSWORD}" =~ .... ]]; then
+          echo \"Please set TRILIUM_PASSWORD with at least 4 characters.\"
           exit 1
         fi
         curl -X POST http://trilium:8080/api/setup/new-document
