@@ -6,7 +6,6 @@ import trilium
 
 
 class Notes(commands.Cog):
-
     @app_commands.command(
         name="search", description="Search for notes based on the provided criteria."
     )
