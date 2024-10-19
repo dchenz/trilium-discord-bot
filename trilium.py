@@ -12,5 +12,10 @@ def login(url: str, token: str) -> ETAPI:
     if client:
         client.close()
     client = ETAPI(url, token)
-    logger.info(client.app_info())
+
+    appInfo = client.app_info()
+    if appInfo.get("code") == "NOT_AUTHENTICATED":
+        raise Exception("Token is invalid")
+    logger.info(appInfo)
+
     return client
