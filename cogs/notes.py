@@ -1,13 +1,8 @@
-import json
-
 from discord import Interaction, app_commands
 from discord.ext import commands
 
+import datautil
 import trilium
-
-
-def prettyJson(obj) -> str:
-    return f"```\n{json.dumps(obj, indent=2)}\n```"
 
 
 class Notes(commands.Cog):
@@ -58,18 +53,14 @@ class Notes(commands.Cog):
             "limit": limit,
         }
         response = trilium.client.search_note(query, **options)
+        fieldsToPick = ["noteId", "title", "dateModified"]
+        notes = [
+            datautil.pickDictKeys(n, fieldsToPick)
+            for n in response["results"]
+            if n["noteId"] != "_hidden"
+        ]
         await interaction.response.send_message(
-            prettyJson(
-                [
-                    {
-                        "noteId": n["noteId"],
-                        "title": n["title"],
-                        "dateCreated": n["dateCreated"],
-                    }
-                    for n in response["results"]
-                    if n["noteId"] != "_hidden"
-                ]
-            )
+            datautil.formatAsTable(notes, fieldsToPick)
         )
 
 
