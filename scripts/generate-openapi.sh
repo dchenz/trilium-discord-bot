@@ -33,3 +33,12 @@ rm -f etapi.openapi.yaml
 # Format the generated code so it's nicer to read.
 
 ruff format $packageName
+
+# Move the generated Github action workflow.
+
+mv $packageName/.github/workflows/python.yml .github/workflows/openapi-test.yaml
+rm -rf $packageName/.github
+sed -i '/.github\/workflows\/python.yml/d' $packageName/.openapi-generator/FILES
+echo "    defaults:"                               >> .github/workflows/openapi-test.yaml
+echo "      run:"                                  >> .github/workflows/openapi-test.yaml
+echo "        working-directory: ./trilium_client" >> .github/workflows/openapi-test.yaml
