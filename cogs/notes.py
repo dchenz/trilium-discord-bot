@@ -1,12 +1,22 @@
 from io import BufferedIOBase, StringIO
 
-from discord import File, Interaction, app_commands
+import Paginator
+from discord import Embed, File, Interaction, app_commands
 from discord.ext import commands
 
 import trilium
-from trilium_client.trilium_client.models import CreateNoteDef
-from utils import formatAsTable, pickDictKeys
+from trilium_client.trilium_client.models import CreateNoteDef, Note
+from utils import partitionList
 from utils.discord import findMessage
+
+
+def createNoteResultsEmbed(notes: list[Note], title: str) -> Embed:
+    embed = Embed(title=title)
+    for note in notes:
+        embed.add_field(
+            name=f"{note.parent_note_ids} / {note.note_id}", value=note.title, inline=False
+        )
+    return embed
 
 
 class Notes(commands.Cog):
@@ -62,13 +72,12 @@ class Notes(commands.Cog):
             "limit": limit,
         }
         response = trilium.client.search_notes(query, **options)
-        fieldsToPick = ["noteId", "title", "dateModified"]
-        notes = [
-            pickDictKeys(n.to_dict(), fieldsToPick)
-            for n in response.results
-            if n.note_id != "_hidden"
+        notes = [n for n in response.results if n.note_id != "_hidden"]
+        pages = [
+            createNoteResultsEmbed(page, f"Page {i+1}")
+            for i, page in enumerate(partitionList(notes, 5))
         ]
-        await interaction.response.send_message(formatAsTable(notes, fieldsToPick), ephemeral=True)
+        await Paginator.Simple(ephemeral=True).start(interaction, pages=pages)
 
     @group.command(name="contents", description="Returns the contents of a note by ID")
     async def getNoteContents(self, interaction: Interaction, noteid: str):

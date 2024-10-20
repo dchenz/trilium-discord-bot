@@ -30,3 +30,7 @@ def pickDictKeys(record: dict[str, Any], fields: list[str]) -> dict[str, Any]:
     Returns a new dictionary containing only a selected set of keys.
     """
     return {k: record[k] for k in record if k in fields}
+
+
+def partitionList(xs: list, n: int) -> list:
+    return [xs[i : i + n] for i in range(0, len(xs), n)]
