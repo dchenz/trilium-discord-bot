@@ -1,7 +1,9 @@
 import logging
 from io import BufferedIOBase, StringIO
 
+import markdown2
 import Paginator
+from bs4 import BeautifulSoup
 from discord import Attachment, Embed, File, Interaction, app_commands
 from discord.ext import commands
 
@@ -115,6 +117,8 @@ class Notes(commands.Cog):
         except Exception as e:
             await interaction.response.send_message(str(e), ephemeral=True)
             return
+        soup = BeautifulSoup(contents, "html.parser")
+        contents = soup.prettify()
         f: BufferedIOBase = StringIO(contents)  # type: ignore
         await interaction.response.send_message(
             file=File(f, filename="message.txt"), ephemeral=True
@@ -150,7 +154,10 @@ class Notes(commands.Cog):
 
         response = trilium.client.create_note(
             CreateNoteDef(
-                parentNoteId=ancestorid, title=title, type="text", content=noteMsg.content
+                parentNoteId=ancestorid,
+                title=title,
+                type="text",
+                content=markdown2.markdown(noteMsg.content),
             )
         )
         if response.note and response.note.note_id:
