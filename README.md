@@ -30,6 +30,12 @@ export TRILIUM_TOKEN="your_trilium_token"
 python3 bot.py
 ```
 
+A Docker Compose file is provided to help you easily set up a Trilium instance for local testing.
+
+```sh
+TRILIUM_PASSWORD=test123 docker compose up --build
+```
+
 ## Development
 
 ### Linting
