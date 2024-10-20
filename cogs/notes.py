@@ -29,11 +29,17 @@ def createNoteResultsEmbed(notes: list[Note], title: str) -> Embed:
 
 async def addAttachmentToNote(attachment: Attachment, noteId: str):
     data = await attachment.read()
+
+    if attachment.content_type and attachment.content_type.startswith("image/"):
+        role = "image"
+    else:
+        role = "file"
+
     response = trilium.client.post_attachment(
         CreateAttachment(
             ownerId=noteId,
             content="",
-            role="file",
+            role=role,
             mime=attachment.content_type,
             title=attachment.filename,
         )
