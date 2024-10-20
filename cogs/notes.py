@@ -9,13 +9,18 @@ from trilium_client.trilium_client.models import CreateNoteDef, Note
 from utils import partitionList
 from utils.discord import findMessage
 
+NOTES_RESULTS_PAGE_SIZE = 10
+
 
 def createNoteResultsEmbed(notes: list[Note], title: str) -> Embed:
+    """
+    Creates a Discord embed that displays a list of notes clearly.
+    """
     embed = Embed(title=title)
     for note in notes:
-        embed.add_field(
-            name=f"{note.parent_note_ids} / {note.note_id}", value=note.title, inline=False
-        )
+        name = f"{'+'.join(note.parent_note_ids or [])} / {note.note_id}"
+        value = note.title
+        embed.add_field(name=name, value=value, inline=False)
     return embed
 
 
@@ -75,7 +80,7 @@ class Notes(commands.Cog):
         notes = [n for n in response.results if n.note_id != "_hidden"]
         pages = [
             createNoteResultsEmbed(page, f"Page {i+1}")
-            for i, page in enumerate(partitionList(notes, 5))
+            for i, page in enumerate(partitionList(notes, NOTES_RESULTS_PAGE_SIZE))
         ]
         await Paginator.Simple(ephemeral=True).start(interaction, pages=pages)
 
