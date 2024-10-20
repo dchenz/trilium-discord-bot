@@ -1,13 +1,16 @@
+import logging
 from io import BufferedIOBase, StringIO
 
 import Paginator
-from discord import Embed, File, Interaction, app_commands
+from discord import Attachment, Embed, File, Interaction, app_commands
 from discord.ext import commands
 
 import trilium
-from trilium_client.trilium_client.models import CreateNoteDef, Note
+from trilium_client.trilium_client.models import CreateAttachment, CreateNoteDef, Note
 from utils import partitionList
 from utils.discord import findMessage
+
+logger = logging.getLogger(__name__)
 
 NOTES_RESULTS_PAGE_SIZE = 10
 
@@ -22,6 +25,21 @@ def createNoteResultsEmbed(notes: list[Note], title: str) -> Embed:
         value = note.title
         embed.add_field(name=name, value=value, inline=False)
     return embed
+
+
+async def addAttachmentToNote(attachment: Attachment, noteId: str):
+    data = await attachment.read()
+    response = trilium.client.post_attachment(
+        CreateAttachment(
+            ownerId=noteId,
+            content="",
+            role="file",
+            mime=attachment.content_type,
+            title=attachment.filename,
+        )
+    )
+    if response.attachment_id:
+        trilium.setAttachmentContents(response.attachment_id, data)
 
 
 class Notes(commands.Cog):
@@ -125,7 +143,9 @@ class Notes(commands.Cog):
                 parentNoteId=ancestorid, title=title, type="text", content=noteMsg.content
             )
         )
-        if response.note:
+        if response.note and response.note.note_id:
+            for attachment in noteMsg.attachments:
+                await addAttachmentToNote(attachment, response.note.note_id)
             await interaction.response.send_message(
                 f"Created note with ID {response.note.note_id}", ephemeral=True
             )
