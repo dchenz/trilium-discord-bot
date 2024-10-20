@@ -21,8 +21,8 @@ def createNoteResultsEmbed(notes: list[Note], title: str) -> Embed:
     """
     embed = Embed(title=title)
     for note in notes:
-        name = f"{'+'.join(note.parent_note_ids or [])} / {note.note_id}"
-        value = note.title
+        name = f"`{'+'.join(note.parent_note_ids or [])} / {note.note_id}`"
+        value = f"**{note.title}**\nModified: {note.date_modified}"
         embed.add_field(name=name, value=value, inline=False)
     return embed
 
