@@ -136,12 +136,16 @@ class Notes(commands.Cog):
         try:
             messageIdInt = int(messageid)
         except ValueError:
-            await interaction.response.send_message("Invalid message ID", ephemeral=True)
+            await interaction.response.send_message(
+                f"Invalid message ID `{messageid}`", ephemeral=True
+            )
             return
 
         noteMsg = await findMessage(messageIdInt, interaction)
         if not noteMsg:
-            await interaction.response.send_message("Unable to find message ID", ephemeral=True)
+            await interaction.response.send_message(
+                f"Unable to find message ID `{messageIdInt}`", ephemeral=True
+            )
             return
 
         response = trilium.client.create_note(
@@ -153,7 +157,7 @@ class Notes(commands.Cog):
             for attachment in noteMsg.attachments:
                 await addAttachmentToNote(attachment, response.note.note_id)
             await interaction.response.send_message(
-                f"Created note with ID {response.note.note_id}", ephemeral=True
+                f"Created note with ID `{response.note.note_id}`", ephemeral=True
             )
 
     @group.command(name="delete", description="Deletes a note.")
