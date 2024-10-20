@@ -43,13 +43,3 @@ ruff check
 
 ruff format
 ```
-
-### Dependencies
-
-This project uses [pipreqs](https://github.com/bndr/pipreqs) to generate the `requirements.txt` file.
-
-```sh
-pip install pipreqs
-
-./scripts/generate-requirements.sh
-```
